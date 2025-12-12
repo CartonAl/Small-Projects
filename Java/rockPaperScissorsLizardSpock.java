@@ -1,27 +1,53 @@
+
+package Java;
+
 import java.util.Random;
 import java.util.Scanner;
 
-public class RPSGame {
+public class rockPaperScissorsLizardSpock {
 
-    // Helper to convert a character to its full word for printing
+    // Convert a character to its full word for printing
     private static String moveToString(char c) {
         switch (c) {
             case 'R': return "Rock";
             case 'P': return "Paper";
             case 'S': return "Scissors";
+            case 'L': return "Lizard";
+            case 'K': return "Spock";   // “K” is often used for SpocK
             default:  return "Invalid";
         }
     }
 
     // Determine outcome: 0 = tie, 1 = player win, -1 = computer win
     private static int decideWinner(char player, char computer) {
+        // Normalise to upper‑case so callers can pass lower‑case too
+        player   = Character.toUpperCase(player);
+        computer = Character.toUpperCase(computer);
+
+        // Tie condition
         if (player == computer) return 0;
-        // Rock beats Scissors, Scissors beats Paper, Paper beats Rock
-        if ((player == 'R' && computer == 'S') ||
-            (player == 'S' && computer == 'P') ||
-            (player == 'P' && computer == 'R')) {
-            return 1;
+
+        // Winning combinations for the player
+        // (player, computer) pairs where player beats computer
+        switch (player) {
+            case 'R': // Rock crushes Scissors & crushes Lizard
+                if (computer == 'S' || computer == 'L') return 1;
+                break;
+            case 'P': // Paper covers Rock & disproves Spock
+                if (computer == 'R' || computer == 'K') return 1;
+                break;
+            case 'S': // Scissors cuts Paper & decapitates Lizard
+                if (computer == 'P' || computer == 'L') return 1;
+                break;
+            case 'L': // Lizard eats Paper & poisons Spock
+                if (computer == 'P' || computer == 'K') return 1;
+                break;
+            case 'K': // Spock vaporises Rock & smashes Scissors
+                if (computer == 'R' || computer == 'S') return 1;
+                break;
         }
+
+        // If we reach here the computer wins
         return -1;
     }
 
@@ -46,10 +72,10 @@ public class RPSGame {
 
         for (int i = 1; i <= rounds; i++) {
             System.out.println("\n--- Round " + i + " ---");
-            System.out.print("Your move (R=Rock, P=Paper, S=Scissors): ");
+            System.out.print("Your move (R=Rock, P=Paper, S=Scissors, L=Lizard, K=Spock): ");
             String input = scanner.nextLine().trim().toUpperCase();
 
-            if (input.length() != 1 || "RPS".indexOf(input.charAt(0)) == -1) {
+            if (input.length() != 1 || "RPSLK".indexOf(input.charAt(0)) == -1) {
                 System.out.println("Invalid move – skipping this round.");
                 i--; // don’t count this as a played round
                 continue;
